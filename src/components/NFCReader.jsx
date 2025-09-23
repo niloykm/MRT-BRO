@@ -42,7 +42,9 @@ export default function NFCReader({ onBalance }) {
     }
 
     if (!supported) {
-      setError("❌ This device/browser doesn't support Web NFC. Try Android Chrome over HTTPS.");
+      setError(
+        "❌ This device/browser doesn't support Web NFC. Try Android Chrome over HTTPS."
+      );
       return;
     }
 
@@ -55,7 +57,9 @@ export default function NFCReader({ onBalance }) {
       reader.onreadingerror = (event) => {
         console.error("NFC reading error:", event);
         setScanning(false);
-        setError("⚠️ NFC reading issue. Please:\n• Hold card steady for 3-4 seconds\n• Try different positions on your phone\n• Ensure card is clean and undamaged\n• Make sure NFC is enabled in settings\n• Try restarting the scan");
+        setError(
+          "⚠️ NFC reading issue. Please:\n• Hold card steady for 3-4 seconds\n• Try different positions on your phone\n• Ensure card is clean and undamaged\n• Make sure NFC is enabled in settings\n• Try restarting the scan"
+        );
       };
 
       reader.onreading = (event) => {
@@ -79,7 +83,11 @@ export default function NFCReader({ onBalance }) {
             onBalance?.(balance);
             setError(""); // Clear any previous errors
           } else {
-            setError("✅ Card detected! However, balance could not be parsed from this card.\n\nCard ID: " + (serialNumber || "Unknown") + "\n\nThis card may:\n• Use a different format\n• Be encrypted or protected\n• Not be a metro/transit card");
+            setError(
+              "✅ Card detected! However, balance could not be parsed from this card.\n\nCard ID: " +
+                (serialNumber || "Unknown") +
+                "\n\nThis card may:\n• Use a different format\n• Be encrypted or protected\n• Not be a metro/transit card"
+            );
           }
         } catch (e) {
           console.error(e);
@@ -152,8 +160,8 @@ export default function NFCReader({ onBalance }) {
 
         {!supported && !mockMode && (
           <div className="text-xs text-slate-500">
-            Tip: Web NFC currently works on <b>Android Chrome</b> over <b>HTTPS</b>.  
-            If you’re testing on desktop, enable <b>Mock Mode</b>.
+            Tip: Web NFC currently works on <b>Android Chrome</b> over{" "}
+            <b>HTTPS</b>. If you’re testing on desktop, enable <b>Mock Mode</b>.
           </div>
         )}
       </div>
