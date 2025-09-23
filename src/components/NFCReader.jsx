@@ -52,13 +52,18 @@ export default function NFCReader({ onBalance }) {
       await reader.scan();
       setScanning(true);
 
-      reader.onreadingerror = () => {
-        setError("⚠️ NFC reading error. Try again or reposition the card.");
+      reader.onreadingerror = (event) => {
+        console.error("NFC reading error:", event);
+        setScanning(false);
+        setError("⚠️ NFC reading issue. Please:\n• Hold card steady for 3-4 seconds\n• Try different positions on your phone\n• Ensure card is clean and undamaged\n• Make sure NFC is enabled in settings\n• Try restarting the scan");
       };
 
       reader.onreading = (event) => {
         try {
+          setScanning(false);
           const { message, serialNumber } = event;
+          console.log("NFC data received:", { message, serialNumber });
+
           let balance = null;
 
           try {
@@ -72,12 +77,14 @@ export default function NFCReader({ onBalance }) {
           if (balance != null) {
             setLastBalance(balance);
             onBalance?.(balance);
+            setError(""); // Clear any previous errors
           } else {
-            setError("Could not parse balance from this card.");
+            setError("✅ Card detected! However, balance could not be parsed from this card.\n\nCard ID: " + (serialNumber || "Unknown") + "\n\nThis card may:\n• Use a different format\n• Be encrypted or protected\n• Not be a metro/transit card");
           }
         } catch (e) {
           console.error(e);
-          setError("❌ Failed to read NFC data.");
+          setError("❌ Failed to read NFC data: " + e.message);
+          setScanning(false);
         }
       };
     } catch (err) {
